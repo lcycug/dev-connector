@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
 const keys = require("../../config/keys");
+const validateRegistrationInput = require("../../validation/register");
 
 // Load User Model
 const User = require("../../models/User");
@@ -23,6 +24,10 @@ router.get("/test", (req, res) => res.json({ msg: "Users Works" }));
  * @access  Public
  */
 router.post("/register", (req, res) => {
+  const { errors, isValid } = validateRegisterInput(req.body);
+  if (!isValid) {
+    return res.json(errors);
+  }
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
       return res.status(400).json({ email: "Email already exists" });
@@ -61,10 +66,15 @@ router.post("/register", (req, res) => {
  * @access  Public
  */
 router.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    res.json({ msg: "Email and password are both required!" });
+  const validateLoginInput = require("../../validation/login");
+  const { isValid, errors } = validateLoginInput(req.body);
+
+  if (!isValid) {
+    return res.json(errors);
   }
+
+  const { email, password } = req.body;
+
   User.findOne({ email }).then(user => {
     if (!user) res.status(404).json({ email: "User not found!" });
     bcrypt.compare(password, user.password).then(isMatched => {
