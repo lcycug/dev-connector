@@ -37,6 +37,7 @@ router.post("/register", (req, res) => {
       });
 
       bcrypt.genSalt(10, (err, salt) => {
+        if (err) throw err;
         bcrypt.hash(newUser.password, salt, (err, hash) => {
           if (err) throw err;
           newUser.password = hash;
@@ -47,6 +48,25 @@ router.post("/register", (req, res) => {
         });
       });
     }
+  });
+});
+
+/**
+ * @router  /api/users/login
+ * @desc    User login
+ * @access  Public
+ */
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.json({ msg: "Email and password are both required!" });
+  }
+  User.findOne({ email }).then(user => {
+    if (!user) res.status(404).json({ email: "User not found!" });
+    bcrypt.compare(password, user.password).then(isMatched => {
+      if (!isMatched) res.status(400).json({ password: "Password wrong!" });
+      res.json({ msg: "Success" });
+    });
   });
 });
 
