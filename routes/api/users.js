@@ -2,9 +2,13 @@ const express = require("express");
 const router = express.Router();
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
+
+const keys = require("../../config/keys");
 
 // Load User Model
-const User = require("../models/User");
+const User = require("../../models/User");
 
 /**
  * @router  /api/users/test
@@ -65,9 +69,30 @@ router.post("/login", (req, res) => {
     if (!user) res.status(404).json({ email: "User not found!" });
     bcrypt.compare(password, user.password).then(isMatched => {
       if (!isMatched) res.status(400).json({ password: "Password wrong!" });
-      res.json({ msg: "Success" });
+
+      const payload = { id: user.id, name: user.name, avatar: user.avatar };
+      jwt.sign(payload, keys.secretOrKey, { expiresIn: 3600 }, (err, token) => {
+        if (err) throw err;
+        res.json({
+          success: true,
+          token: "Bearer " + token
+        });
+      });
     });
   });
 });
+
+/**
+ * @router  /api/users/current
+ * @desc    Return current user info
+ * @access  Private
+ */
+router.get(
+  "/current",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    res.json({ msg: "Authenticated" });
+  }
+);
 
 module.exports = router;
