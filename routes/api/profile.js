@@ -7,8 +7,10 @@ const passport = require("passport");
 const Profile = require("../../models/Profile");
 const User = require("../../models/User");
 
-// Load valiadtion rule
+// Load valiadtion rules
 const validateProfileInput = require("../../validation/profile");
+const validateExperienceInput = require("../../validation/experience");
+const validateEducationInput = require("../../validation/education");
 
 /**
  * @router  /api/profile/test
@@ -158,6 +160,79 @@ router.post(
             .catch(err => console.log(err));
         });
       }
+    });
+  }
+);
+
+/**
+ * @router  POST /api/profile/experience
+ * @desc    Add experience
+ * @access  Private
+ */
+router.post(
+  "/experience",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { errors, isValid } = validateExperienceInput(req.body);
+    if (!isValid) {
+      return res.json({ errors });
+    }
+
+    Profile.findOne({ user: req.user.id }).then(profile => {
+      if (!profile) {
+        errors.profile = "There is no profile for experience addition.";
+        res.status(404).json(errors);
+      }
+      const newExp = {
+        title: req.body.title,
+        company: req.body.company,
+        location: req.body.location,
+        from: req.body.from,
+        to: req.body.to,
+        current: req.body.current,
+        description: req.body.description
+      };
+
+      profile.experience.unshift(newExp);
+
+      profile.save().then(profile => res.json(profile));
+    });
+  }
+);
+
+/**
+ * @router  POST /api/profile/education
+ * @desc    Add education
+ * @access  Private
+ */
+router.post(
+  "/education",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { errors, isValid } = validateEducationInput(req.body);
+    if (!isValid) {
+      return res.json({ errors });
+    }
+
+    Profile.findOne({ user: req.user.id }).then(profile => {
+      if (!profile) {
+        errors.profile = "There is no profile for experience addition.";
+        res.status(404).json(errors);
+      }
+      const newEdu = {
+        school: req.body.school,
+        degree: req.body.degree,
+        location: req.body.location,
+        fieldofstudy: req.body.fieldofstudy,
+        from: req.body.from,
+        to: req.body.to,
+        current: req.body.current,
+        description: req.body.description
+      };
+
+      profile.education.unshift(newEdu);
+
+      profile.save().then(profile => res.json(profile));
     });
   }
 );
