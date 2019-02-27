@@ -8,6 +8,7 @@ const Profile = require("../../models/Profile");
 
 // Load validation rules
 const validatePostInput = require("../../validation/post");
+const validateCommentInput = require("../../validation/comment");
 
 /**
  * @router  /api/posts/test
@@ -110,9 +111,8 @@ router.post(
             post.likes.filter(like => like.user.toString() === req.user.id)
               .length
           ) {
-            return res
-              .status(400)
-              .json({ alreadyliked: "The user already liked the post." });
+            errors.alreadyliked = "The user already liked the post.";
+            return res.status(400).json(errors);
           }
 
           // Add user id to likes array
@@ -144,9 +144,8 @@ router.post(
             !post.likes.filter(like => like.user.toString() === req.user.id)
               .length
           ) {
-            return res
-              .status(400)
-              .json({ notliked: "You have not yet liked the post." });
+            errors.notliked = "You have not yet liked the post.";
+            return res.status(400).json(errors);
           }
 
           // Remove like
@@ -159,6 +158,91 @@ router.post(
             .then(post => res.json(post))
             .catch(err => res.json(err));
         });
+      })
+      .catch(err => res.json(err));
+  }
+);
+
+/**
+ * @router  POST /api/posts/comment/:post_id
+ * @desc    Comment a post
+ * @access  Private
+ */
+router.post(
+  "/comment/:post_id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { errors, isValid } = validateCommentInput(req.body);
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+    Profile.findOne({ user: req.user.id })
+      .then(profile => {
+        Post.findById(req.params.post_id).then(post => {
+          // Add user id to likes array
+          if (!post.comments) {
+            post.comments = [];
+          }
+          post.comments.unshift({
+            user: req.user.id,
+            text: req.body.text,
+            name: req.user.name,
+            avatar: req.user.avatar
+          });
+          post
+            .save()
+            .then(post => res.json(post))
+            .catch(err => res.json(err));
+        });
+      })
+      .catch(err => res.json(err));
+  }
+);
+
+/**
+ * @router  DELETE /api/posts/comment/:comment_id
+ * @desc    Delete a comment of a post
+ * @access  Private
+ */
+router.delete(
+  "/comment/:post_id/:comment_id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const errors = {};
+    Profile.findOne({ user: req.user.id })
+      .then(profile => {
+        Post.findById(req.params.post_id)
+          .then(post => {
+            if (!post) {
+              errors.postnotfound = "Post not found.";
+              return res.status(404).json(errors);
+            }
+            // Delete comment
+            if (
+              !post.comments.filter(
+                comment => comment._id.toString() === req.params.comment_id
+              ).length
+            ) {
+              errors.commentnotfound = "Comment not found.";
+              res.status(404).json(errors);
+            } else {
+              post.comments = [
+                ...post.comments.filter(
+                  comment => comment._id.toString() !== req.params.comment_id
+                )
+              ];
+
+              post
+                .save()
+                .then(post => res.json(post))
+                .catch(err => res.json(err));
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            errors.postnotfound = "Post not found.";
+            res.status(404).json(errors);
+          });
       })
       .catch(err => res.json(err));
   }
