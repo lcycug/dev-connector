@@ -14,7 +14,7 @@ module.exports = function validateRegisterInput(data) {
     errors.name = "Name is required.";
   } else {
     if (!Validator.isLength(name, { min: 2, max: 30 })) {
-      errors.name = "Username should be between 2 and 30 characters.";
+      errors.name = "Name should be between 2 and 30 characters.";
     }
   }
 
@@ -35,10 +35,10 @@ module.exports = function validateRegisterInput(data) {
       errors.password = "Password should be between 6 and 30 characters.";
     } else {
       if (!password2) {
-        errors.noconfirmpassword = "Confirm password is required.";
+        errors.password2 = "Confirm password is required.";
       } else {
         if (!Validator.equals(password, password2)) {
-          errors.passwordnotmatch = "Passwords do not match!";
+          errors.password2 = "Passwords do not match!";
         }
       }
     }
