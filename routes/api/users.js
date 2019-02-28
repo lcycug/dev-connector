@@ -61,7 +61,7 @@ router.post("/register", (req, res) => {
 });
 
 /**
- * @router  /api/users/login
+ * @router  POST /api/users/login
  * @desc    User login
  * @access  Public
  */
@@ -70,15 +70,21 @@ router.post("/login", (req, res) => {
   const { isValid, errors } = validateLoginInput(req.body);
 
   if (!isValid) {
-    return res.json(errors);
+    return res.status(400).json(errors);
   }
 
   const { email, password } = req.body;
 
   User.findOne({ email }).then(user => {
-    if (!user) res.status(404).json({ email: "User not found!" });
+    if (!user) {
+      errors.email = "User not found!";
+      return res.status(404).json(errors);
+    }
     bcrypt.compare(password, user.password).then(isMatched => {
-      if (!isMatched) res.status(400).json({ password: "Password wrong!" });
+      if (!isMatched) {
+        errors.password = "Password incorrect!";
+        return res.status(400).json(errors);
+      }
 
       const payload = { id: user.id, name: user.name, avatar: user.avatar };
       jwt.sign(payload, keys.secretOrKey, { expiresIn: 3600 }, (err, token) => {

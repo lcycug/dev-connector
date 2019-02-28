@@ -1,8 +1,50 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-export default class Navbar extends Component {
+import { logoutUser } from "../../actions/authAction";
+
+class Navbar extends Component {
+  handleLogout = event => {
+    event.preventDefault();
+    this.props.logoutUser();
+    this.props.history && this.props.history.push("/");
+  };
   render() {
+    const { isAuthenticated, user } = this.props.auth;
+    const authUser = (
+      <ul className="navbar-nav ml-auto">
+        <li className="nav-item">
+          <img
+            src={user.avatar}
+            alt="Avatar"
+            className="rounded-circle"
+            style={{ height: "30px", width: "30px", verticalAlign: "text-top" }}
+          />
+        </li>
+        <li className="nav-item">
+          {/* eslint-disable-next-line */}
+          <a className="nav-link" onClick={e => this.handleLogout(e)}>
+            Logout
+          </a>
+        </li>
+      </ul>
+    );
+    const guestUser = (
+      <ul className="navbar-nav ml-auto">
+        <li className="nav-item">
+          <Link className="nav-link" to="/register">
+            Sign Up
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/login">
+            Login
+          </Link>
+        </li>
+      </ul>
+    );
     return (
       <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
         <div className="container">
@@ -27,22 +69,24 @@ export default class Navbar extends Component {
                 </Link>
               </li>
             </ul>
-
-            <ul className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link className="nav-link" to="/register">
-                  Sign Up
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/login">
-                  Login
-                </Link>
-              </li>
-            </ul>
+            {isAuthenticated ? authUser : guestUser}
           </div>
         </div>
       </nav>
     );
   }
 }
+
+Navbar.propTypes = {
+  auth: PropTypes.object.isRequired,
+  logoutUser: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(
+  mapStateToProps,
+  { logoutUser }
+)(withRouter(Navbar));
