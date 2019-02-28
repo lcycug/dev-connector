@@ -3,10 +3,11 @@ const isEmpty = require("./isEmpty");
 
 module.exports = function validateRegisterInput(data) {
   let errors = {};
-  let { name, password, email } = data;
+  let { name, password, password2, email } = data;
   name = !isEmpty(name) ? name : "";
   email = !isEmpty(email) ? email : "";
   password = !isEmpty(password) ? password : "";
+  password2 = !isEmpty(password2) ? password2 : "";
 
   // Name rules
   if (!name) {
@@ -32,6 +33,14 @@ module.exports = function validateRegisterInput(data) {
   } else {
     if (!Validator.isLength(data.password, { min: 6, max: 30 })) {
       errors.password = "Password should be between 6 and 30 characters.";
+    } else {
+      if (!password2) {
+        errors.noconfirmpassword = "Confirm password is required.";
+      } else {
+        if (!Validator.equals(password, password2)) {
+          errors.passwordnotmatch = "Passwords do not match!";
+        }
+      }
     }
   }
   return {
