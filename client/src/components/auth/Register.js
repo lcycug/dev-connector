@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 export default class Register extends Component {
   constructor(props) {
@@ -17,7 +18,16 @@ export default class Register extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log(this.state);
+    const user = {
+      name: this.state.name,
+      email: this.state.email,
+      password: this.state.password,
+      password2: this.state.password2
+    };
+    axios
+      .post("/api/users/register", user)
+      .then(res => console.log(res.data))
+      .catch(err => console.error(err.response.data));
   };
 
   render() {
