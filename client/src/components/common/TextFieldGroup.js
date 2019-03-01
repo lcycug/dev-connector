@@ -13,7 +13,8 @@ export default function TextFieldGroup({
   info,
   options,
   required,
-  icon
+  icon,
+  disabled
 }) {
   let selectOptions;
   if (group === "select") {
@@ -44,6 +45,7 @@ export default function TextFieldGroup({
             autoComplete="off"
             placeholder={placeholder}
             name={name}
+            value={value}
             onChange={onChange}
           />
           {info && <small className="form-text text-muted">{info}</small>}
@@ -94,6 +96,7 @@ export default function TextFieldGroup({
             name={name}
             value={value}
             onChange={onChange}
+            disabled={disabled}
           />
           {info && <small className="form-text text-muted">{info}</small>}
           {error && <div className="invalid-feedback">{error}</div>}
@@ -114,7 +117,8 @@ TextFieldGroup.propTypes = {
   placeholder: PropTypes.string,
   options: PropTypes.array,
   required: PropTypes.string,
-  type: PropTypes.string
+  type: PropTypes.string,
+  disabled: PropTypes.string
 };
 
 TextFieldGroup.defaultProps = {

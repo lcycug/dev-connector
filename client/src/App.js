@@ -49,6 +49,11 @@ class App extends Component {
             path="/dashboard/create-new-profile"
             component={CreateProfile}
           />
+          <PrivateRoute
+            exact
+            path="/dashboard/edit-profile"
+            component={CreateProfile}
+          />
         </Switch>
         <Footer />
       </>

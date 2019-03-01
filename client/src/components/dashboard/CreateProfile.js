@@ -3,36 +3,73 @@ import { connect } from "react-redux";
 import { Link, Prompt } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import { createProfile } from "../../actions/profileActions";
+import { createProfile, getCurrentProfile } from "../../actions/profileActions";
 
 import TextFieldGroup from "../common/TextFieldGroup";
 
 class CreateProfile extends Component {
   constructor(props) {
     super(props);
+    const profileExisted =
+      props.profile.profile !== null &&
+      Object.keys(props.profile.profile).length;
     this.state = {
-      handle: "",
-      status: "",
-      company: "",
-      location: "",
-      skills: [],
-      githubusername: "",
-      website: "",
-      bio: "",
-      twitter: "",
-      youtube: "",
-      facebook: "",
-      instagram: "",
-      linkedin: "",
+      handle: profileExisted ? props.profile.profile.handle : "",
+      status: profileExisted ? props.profile.profile.status : "",
+      company: profileExisted ? props.profile.profile.company : "",
+      location: profileExisted ? props.profile.profile.location : "",
+      skills: profileExisted ? props.profile.profile.skills : [],
+      githubusername: profileExisted
+        ? props.profile.profile.githubusername
+        : "",
+      website: profileExisted ? props.profile.profile.website : "",
+      bio: profileExisted ? props.profile.profile.bio : "",
+      twitter: profileExisted ? props.profile.profile.social.twitter : "",
+      youtube: profileExisted ? props.profile.profile.social.youtube : "",
+      facebook: profileExisted ? props.profile.profile.social.facebook : "",
+      instagram: profileExisted ? props.profile.profile.social.instagram : "",
+      linkedin: profileExisted ? props.profile.profile.social.linkedin : "",
       errors: {},
-      socialAreaExpand: false,
-      Blocking: false
+      socialAreaExpand: profileExisted ? true : false,
+      Blocking: false,
+      createOrEdit: profileExisted ? "Edit" : "Create"
     };
+  }
+
+  componentDidMount() {
+    if (this.props.profile.profile === null) {
+      this.props.getCurrentProfile();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
+    }
+    // Used for specified page data loading
+    if (
+      nextProps.profile.profile !== null &&
+      Object.keys(nextProps.profile.profile).length
+    ) {
+      const { profile } = nextProps.profile;
+      this.setState({
+        handle: profile.handle,
+        status: profile.status,
+        company: profile.company,
+        location: profile.location,
+        skills: profile.skills,
+        githubusername: profile.githubusername,
+        website: profile.website,
+        bio: profile.bio,
+        twitter: profile.social.twitter,
+        youtube: profile.social.youtube,
+        facebook: profile.social.facebook,
+        instagram: profile.social.instagram,
+        linkedin: profile.social.linkedin,
+        socialAreaExpand: true,
+        Blocking: false,
+        createOrEdit: "Edit"
+      });
     }
   }
 
@@ -115,7 +152,9 @@ class CreateProfile extends Component {
               <Link to="/dashboard" className="btn btn-light">
                 Go Back
               </Link>
-              <h1 className="display-4 text-center">Create Your Profile</h1>
+              <h1 className="display-4 text-center">
+                {this.state.createOrEdit} Your Profile
+              </h1>
               <p className="lead text-center">
                 Let's get some information to make your profile stand out
               </p>
@@ -139,15 +178,20 @@ class CreateProfile extends Component {
                 <TextFieldGroup
                   placeholder="Profile handle"
                   name="handle"
+                  value={this.state.handle}
                   required="required"
                   info="A unique handle for your profile URL. Your full name,
                 company name, nickname, etc (This CAN'T be changed later)"
                   onChange={e => this.handleChange(e)}
                   error={errors.handle}
+                  disabled={
+                    this.state.createOrEdit === "Create" ? null : "disabled"
+                  }
                 />
                 <TextFieldGroup
                   group="select"
                   name="status"
+                  value={this.state.status}
                   required="required"
                   info="Give us an idea of where you are at in your career"
                   onChange={e => this.handleChange(e)}
@@ -157,6 +201,7 @@ class CreateProfile extends Component {
                 <TextFieldGroup
                   placeholder="Company"
                   name="company"
+                  value={this.state.company}
                   info="Could be your own company or one you work for"
                   onChange={e => this.handleChange(e)}
                   error={errors.company}
@@ -164,6 +209,7 @@ class CreateProfile extends Component {
                 <TextFieldGroup
                   placeholder="Website"
                   name="website"
+                  value={this.state.website}
                   info="Could be your own or a company website"
                   onChange={e => this.handleChange(e)}
                   error={errors.website}
@@ -171,6 +217,7 @@ class CreateProfile extends Component {
                 <TextFieldGroup
                   placeholder="Location"
                   name="location"
+                  value={this.state.location}
                   info="City & state suggested (eg. Boston, MA)"
                   onChange={e => this.handleChange(e)}
                   error={errors.location}
@@ -178,6 +225,7 @@ class CreateProfile extends Component {
                 <TextFieldGroup
                   placeholder="Skills"
                   name="skills"
+                  value={this.state.skills.toString()}
                   required="required"
                   info="Please use comma separated values (eg.
                     HTML,CSS,JavaScript,PHP)"
@@ -187,6 +235,7 @@ class CreateProfile extends Component {
                 <TextFieldGroup
                   placeholder="Github Username"
                   name="githubusername"
+                  value={this.state.githubusername}
                   info="If you want your latest repos and a Github link, include
                   your username"
                   onChange={e => this.handleChange(e)}
@@ -195,6 +244,7 @@ class CreateProfile extends Component {
                 <TextFieldGroup
                   group="textarea"
                   placeholder="A short bio of yourself"
+                  value={this.state.bio}
                   name="bio"
                   info="Tell us a little about yourself"
                   onChange={e => this.handleChange(e)}
@@ -218,6 +268,7 @@ class CreateProfile extends Component {
                       icon="fab fa-twitter"
                       placeholder="Twitter Profile URL"
                       name="twitter"
+                      value={this.state.twitter}
                       onChange={e => this.handleChange(e)}
                       error={errors.twitter}
                     />
@@ -226,6 +277,7 @@ class CreateProfile extends Component {
                       icon="fab fa-facebook"
                       placeholder="Facebook Page URL"
                       name="facebook"
+                      value={this.state.facebook}
                       onChange={e => this.handleChange(e)}
                       error={errors.facebook}
                     />
@@ -234,6 +286,7 @@ class CreateProfile extends Component {
                       icon="fab fa-linkedin"
                       placeholder="Linkedin Page URL"
                       name="linkedin"
+                      value={this.state.linkedin}
                       onChange={e => this.handleChange(e)}
                       error={errors.linkedin}
                     />
@@ -242,6 +295,7 @@ class CreateProfile extends Component {
                       icon="fab fa-youtube"
                       placeholder="YouTube Page URL"
                       name="youtube"
+                      value={this.state.youtube}
                       onChange={e => this.handleChange(e)}
                       error={errors.youtube}
                     />
@@ -250,6 +304,7 @@ class CreateProfile extends Component {
                       icon="fab fa-instagram"
                       placeholder="Instagram Page URL"
                       name="instagram"
+                      value={this.state.instagram}
                       onChange={e => this.handleChange(e)}
                       error={errors.instagram}
                     />
@@ -280,5 +335,5 @@ const mapStateTpProps = state => ({
 
 export default connect(
   mapStateTpProps,
-  { createProfile }
+  { createProfile, getCurrentProfile }
 )(CreateProfile);
