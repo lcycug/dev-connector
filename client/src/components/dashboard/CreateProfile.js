@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, Prompt } from "react-router-dom";
+import PropTypes from "prop-types";
+
+import { createProfile } from "../../actions/profileActions";
 
 import TextFieldGroup from "../common/TextFieldGroup";
 
@@ -27,6 +30,12 @@ class CreateProfile extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
+
   handleChange = event => {
     event.preventDefault();
     this.setState({ [event.target.name]: event.target.value, Blocking: true });
@@ -34,8 +43,23 @@ class CreateProfile extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+    const profileData = {
+      handle: this.state.handle,
+      status: this.state.status,
+      company: this.state.company,
+      location: this.state.location,
+      skills: this.state.skills,
+      githubusername: this.state.githubusername,
+      website: this.state.website,
+      bio: this.state.bio,
+      twitter: this.state.twitter,
+      youtube: this.state.youtube,
+      facebook: this.state.facebook,
+      instagram: this.state.instagram,
+      linkedin: this.state.linkedin
+    };
+    this.props.createProfile(profileData, this.props.history);
     this.setState({ Blocking: false });
-    console.log("Submitting...");
   };
 
   handleClick = event => {
@@ -95,7 +119,6 @@ class CreateProfile extends Component {
               <p className="lead text-center">
                 Let's get some information to make your profile stand out
               </p>
-
               <small className="d-block pb-3">
                 (
                 <i
@@ -143,7 +166,7 @@ class CreateProfile extends Component {
                   name="website"
                   info="Could be your own or a company website"
                   onChange={e => this.handleChange(e)}
-                  error={errors.company}
+                  error={errors.website}
                 />
                 <TextFieldGroup
                   placeholder="Location"
@@ -155,6 +178,7 @@ class CreateProfile extends Component {
                 <TextFieldGroup
                   placeholder="Skills"
                   name="skills"
+                  required="required"
                   info="Please use comma separated values (eg.
                     HTML,CSS,JavaScript,PHP)"
                   onChange={e => this.handleChange(e)}
@@ -241,8 +265,20 @@ class CreateProfile extends Component {
   }
 }
 
+CreateProfile.propTypes = {
+  profile: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+  createProfile: PropTypes.func.isRequired
+};
+
 const mapStateTpProps = state => ({
-  profile: state.profile
+  profile: state.profile,
+  auth: state.auth,
+  errors: state.errors
 });
 
-export default connect(mapStateTpProps)(CreateProfile);
+export default connect(
+  mapStateTpProps,
+  { createProfile }
+)(CreateProfile);

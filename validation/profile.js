@@ -31,22 +31,22 @@ module.exports = function validateProfileInput(data) {
   const twitter = !isEmpty(data.twitter) ? data.twitter : "";
 
   if (!Validator.isEmpty(website) && !Validator.isURL(website)) {
-    error.website = "Website URL is invalid.";
+    errors.website = "Website URL is invalid.";
   }
   if (!Validator.isEmpty(youtube) && !Validator.isURL(youtube)) {
-    error.youtube = "Youtube URL is invalid.";
+    errors.youtube = "Youtube URL is invalid.";
   }
   if (!Validator.isEmpty(facebook) && !Validator.isURL(facebook)) {
-    error.facebook = "Facebook URL is invalid.";
+    errors.facebook = "Facebook URL is invalid.";
   }
   if (!Validator.isEmpty(instagram) && !Validator.isURL(instagram)) {
-    error.instagram = "Instagram URL is invalid.";
+    errors.instagram = "Instagram URL is invalid.";
   }
   if (!Validator.isEmpty(linkedin) && !Validator.isURL(linkedin)) {
-    error.linkedin = "Linkedin URL is invalid.";
+    errors.linkedin = "Linkedin URL is invalid.";
   }
   if (!Validator.isEmpty(twitter) && !Validator.isURL(twitter)) {
-    error.twitter = "Twitter URL is invalid.";
+    errors.twitter = "Twitter URL is invalid.";
   }
 
   return {

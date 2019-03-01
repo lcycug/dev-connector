@@ -110,7 +110,7 @@ router.post(
   (req, res) => {
     const { errors, isValid } = validateProfileInput(req.body);
     if (!isValid) {
-      return res.json(errors);
+      return res.status(400).json(errors);
     }
     const profileFields = {};
     profileFields.user = req.user.id;
@@ -124,7 +124,9 @@ router.post(
       profileFields.githubusername = req.body.githubusername;
     // Skills
     if (typeof req.body.skills)
-      profileFields.skills = req.body.skills.split(",");
+      profileFields.skills = req.body.skills
+        .split(",")
+        .map(item => item.toString().trim());
 
     // Social
     profileFields.social = {};

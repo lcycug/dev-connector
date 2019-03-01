@@ -4,7 +4,7 @@ import jwtDecode from "jwt-decode";
 
 import PrivateRoute from "./components/common/PrivateRoute";
 
-import { setCurrentUser } from "./actions/authActions";
+import { setCurrentUser, logoutUser } from "./actions/authActions";
 import store from "./components/store";
 import setAuthToken from "./utils/setAuthToken";
 
@@ -23,8 +23,15 @@ if (localStorage.getItem("jwtToken")) {
   setAuthToken(token);
   // Devode token
   const decoded = jwtDecode(token);
-  // Set current user
-  store.dispatch(setCurrentUser(decoded));
+  // Log out user if expire time is triggered
+  const expireTime = decoded.exp;
+  const currentTime = new Date().getTime() / 1000;
+  if (expireTime < currentTime) {
+    logoutUser();
+  } else {
+    // Set current user
+    store.dispatch(setCurrentUser(decoded));
+  }
 }
 
 class App extends Component {

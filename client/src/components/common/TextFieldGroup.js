@@ -38,12 +38,16 @@ export default function TextFieldGroup({
           </div>
           <input
             type={type}
-            className="form-control form-control-lg"
+            className={classnames("form-control form-control-lg", {
+              "is-invalid": error
+            })}
             autoComplete="off"
             placeholder={placeholder}
             name={name}
             onChange={onChange}
           />
+          {info && <small className="form-text text-muted">{info}</small>}
+          {error && <div className="invalid-feedback">{error}</div>}
         </div>
       ) : group === "select" ? (
         <div className="form-group">
