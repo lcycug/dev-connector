@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 
-import { setCurrentUser } from "./actions/authAction";
+import PrivateRoute from "./components/common/PrivateRoute";
+
+import { setCurrentUser } from "./actions/authActions";
 import store from "./components/store";
 import setAuthToken from "./utils/setAuthToken";
 
@@ -12,6 +14,7 @@ import Landing from "./components/layout/Landing";
 import Footer from "./components/layout/Footer";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
+import Dashboard from "./components/dashboard/Dashboard";
 
 if (localStorage.getItem("jwtToken")) {
   const token = localStorage.getItem("jwtToken");
@@ -32,6 +35,7 @@ class App extends Component {
           <Route exact path="/" component={Landing} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
+          <PrivateRoute exact path="/dashboard" component={Dashboard} />
         </Switch>
         <Footer />
       </>
