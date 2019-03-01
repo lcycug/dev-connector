@@ -16,7 +16,7 @@ class Dashboard extends Component {
     this.props.getCurrentProfile();
   }
   render() {
-    const { user, idAuthenticated } = this.props.auth;
+    const { user } = this.props.auth;
     const { profile, loading } = this.props.profile;
     let dashboardContent;
     if (profile === null || loading) {
@@ -29,7 +29,7 @@ class Dashboard extends Component {
           <div className="row">
             <div className="col-md-12">
               <h1 className="display-4">Dashboard</h1>
-              <p className="lead text-muted">Welcome John Doe</p>
+              <p className="lead text-muted">Welcome {user.name}</p>
               <div className="btn-group mb-4" role="group">
                 <Link
                   to="/dashboard/create-new-profile"

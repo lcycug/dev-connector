@@ -37,3 +37,12 @@ img {
 .form-control::placeholder {
   color: #bbb !important;
 }
+
+i.required {
+  color: red;
+  position: relative;
+  float: left;
+  font-size: 8px;
+  left: -15px;
+  top: 30px;
+}

@@ -15,6 +15,7 @@ import Footer from "./components/layout/Footer";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
+import CreateProfile from "./components/dashboard/CreateProfile";
 
 if (localStorage.getItem("jwtToken")) {
   const token = localStorage.getItem("jwtToken");
@@ -36,6 +37,11 @@ class App extends Component {
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <PrivateRoute exact path="/dashboard" component={Dashboard} />
+          <PrivateRoute
+            exact
+            path="/dashboard/create-new-profile"
+            component={CreateProfile}
+          />
         </Switch>
         <Footer />
       </>
