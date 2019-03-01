@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link, Prompt } from "react-router-dom";
 
 import TextFieldGroup from "../common/TextFieldGroup";
 
@@ -20,18 +21,29 @@ class CreateProfile extends Component {
       facebook: "",
       instagram: "",
       linkedin: "",
-      errors: {}
+      errors: {},
+      socialAreaExpand: false,
+      Blocking: false
     };
   }
 
   handleChange = event => {
     event.preventDefault();
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState({ [event.target.name]: event.target.value, Blocking: true });
   };
 
   handleSubmit = event => {
     event.preventDefault();
+    this.setState({ Blocking: false });
     console.log("Submitting...");
+  };
+
+  handleClick = event => {
+    event.preventDefault();
+    this.setState(preState => ({
+      socialAreaExpand: !preState.socialAreaExpand,
+      Blocking: true
+    }));
   };
 
   render() {
@@ -70,14 +82,15 @@ class CreateProfile extends Component {
         value: "Other"
       }
     ];
+
     return (
       <div className="create-profile">
         <div className="container">
           <div className="row">
             <div className="col-md-8 m-auto">
-              <a href="dashboard.html" className="btn btn-light">
+              <Link to="/dashboard" className="btn btn-light">
                 Go Back
-              </a>
+              </Link>
               <h1 className="display-4 text-center">Create Your Profile</h1>
               <p className="lead text-center">
                 Let's get some information to make your profile stand out
@@ -91,9 +104,17 @@ class CreateProfile extends Component {
                 />
                 ) Required fields
               </small>
-              <form action="add-experience.html">
+              <form noValidate onSubmit={e => this.handleSubmit(e)}>
+                <Prompt
+                  when={this.state.Blocking}
+                  message={location =>
+                    `Are you sure you want to go to ${
+                      location.pathname
+                    },\nif so, infos here will be gone.`
+                  }
+                />
                 <TextFieldGroup
-                  placeholder="* Profile handle"
+                  placeholder="Profile handle"
                   name="handle"
                   required="required"
                   info="A unique handle for your profile URL. Your full name,
@@ -156,52 +177,60 @@ class CreateProfile extends Component {
                   error={errors.bio}
                 />
                 <div className="mb-3">
-                  <button type="button" className="btn btn-light">
+                  <button
+                    type="button"
+                    className="btn btn-light"
+                    onClick={e => this.handleClick(e)}
+                  >
                     Add Social Network Links
                   </button>
                   <span className="text-muted">Optional</span>
                 </div>
 
-                <TextFieldGroup
-                  group="icon-input"
-                  icon="fab fa-twitter"
-                  placeholder="Twitter Profile URL"
-                  name="twitter"
-                  onChange={e => this.handleChange(e)}
-                  error={errors.twitter}
-                />
-                <TextFieldGroup
-                  group="icon-input"
-                  icon="fab fa-facebook"
-                  placeholder="Facebook Page URL"
-                  name="facebook"
-                  onChange={e => this.handleChange(e)}
-                  error={errors.facebook}
-                />
-                <TextFieldGroup
-                  group="icon-input"
-                  icon="fab fa-linkedin"
-                  placeholder="Linkedin Page URL"
-                  name="linkedin"
-                  onChange={e => this.handleChange(e)}
-                  error={errors.linkedin}
-                />
-                <TextFieldGroup
-                  group="icon-input"
-                  icon="fab fa-youtube"
-                  placeholder="YouTube Page URL"
-                  name="youtube"
-                  onChange={e => this.handleChange(e)}
-                  error={errors.youtube}
-                />
-                <TextFieldGroup
-                  group="icon-input"
-                  icon="fab fa-instagram"
-                  placeholder="Instagram Page URL"
-                  name="instagram"
-                  onChange={e => this.handleChange(e)}
-                  error={errors.instagram}
-                />
+                {this.state.socialAreaExpand ? (
+                  <>
+                    <TextFieldGroup
+                      group="icon-input"
+                      icon="fab fa-twitter"
+                      placeholder="Twitter Profile URL"
+                      name="twitter"
+                      onChange={e => this.handleChange(e)}
+                      error={errors.twitter}
+                    />
+                    <TextFieldGroup
+                      group="icon-input"
+                      icon="fab fa-facebook"
+                      placeholder="Facebook Page URL"
+                      name="facebook"
+                      onChange={e => this.handleChange(e)}
+                      error={errors.facebook}
+                    />
+                    <TextFieldGroup
+                      group="icon-input"
+                      icon="fab fa-linkedin"
+                      placeholder="Linkedin Page URL"
+                      name="linkedin"
+                      onChange={e => this.handleChange(e)}
+                      error={errors.linkedin}
+                    />
+                    <TextFieldGroup
+                      group="icon-input"
+                      icon="fab fa-youtube"
+                      placeholder="YouTube Page URL"
+                      name="youtube"
+                      onChange={e => this.handleChange(e)}
+                      error={errors.youtube}
+                    />
+                    <TextFieldGroup
+                      group="icon-input"
+                      icon="fab fa-instagram"
+                      placeholder="Instagram Page URL"
+                      name="instagram"
+                      onChange={e => this.handleChange(e)}
+                      error={errors.instagram}
+                    />
+                  </>
+                ) : null}
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
             </div>

@@ -3,7 +3,7 @@ import classnames from "classnames";
 import PropTypes from "prop-types";
 
 export default function TextFieldGroup({
-  group, // used for distinguish `input`, `select`, and `textarea`
+  group, // used for distinguish `input`, `select`, `icon-input` and `textarea`
   type,
   name,
   error,
@@ -39,6 +39,7 @@ export default function TextFieldGroup({
           <input
             type={type}
             className="form-control form-control-lg"
+            autoComplete="off"
             placeholder={placeholder}
             name={name}
             onChange={onChange}
@@ -67,6 +68,7 @@ export default function TextFieldGroup({
             className={classnames("form-control form-control-lg", {
               "is-invalid": error
             })}
+            autoComplete="off"
             name={name}
             value={value}
             onChange={onChange}
@@ -84,7 +86,7 @@ export default function TextFieldGroup({
               "is-invalid": error
             })}
             placeholder={placeholder}
-            autoComplete="new-password" //'off' not work for Chrome
+            autoComplete="off" //'off' not work for Chrome
             name={name}
             value={value}
             onChange={onChange}
@@ -100,7 +102,7 @@ export default function TextFieldGroup({
 TextFieldGroup.propTypes = {
   group: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  error: PropTypes.string.isRequired,
+  error: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string,
   info: PropTypes.string,
