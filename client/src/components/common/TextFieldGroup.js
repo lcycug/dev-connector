@@ -94,7 +94,13 @@ export default function TextFieldGroup({
             placeholder={placeholder}
             autoComplete="off" //'off' not work for Chrome
             name={name}
-            value={value}
+            value={
+              Array.isArray(value)
+                ? value.toString()
+                : value === undefined
+                ? ""
+                : value
+            }
             onChange={onChange}
             disabled={disabled}
           />

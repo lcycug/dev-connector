@@ -12,10 +12,10 @@ import {
 
 class Dashboard extends Component {
   componentDidMount() {
-    if (this.props.profile.profile === null) {
-      this.props.setProfileLoading();
-      this.props.getCurrentProfile();
-    }
+    // if (this.props.profile.profile === null) {
+    this.props.setProfileLoading();
+    this.props.getCurrentProfile();
+    // }
   }
   render() {
     const { user } = this.props.auth;

@@ -12,7 +12,7 @@ class CreateProfile extends Component {
     super(props);
     const profileExisted =
       props.profile.profile !== null &&
-      Object.keys(props.profile.profile).length;
+      Object.keys(props.profile.profile).length > 0;
     this.state = {
       handle: profileExisted ? props.profile.profile.handle : "",
       status: profileExisted ? props.profile.profile.status : "",
@@ -46,30 +46,45 @@ class CreateProfile extends Component {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
     }
+    // Redirection
+    if (
+      !Object.keys(nextProps.profile.profile).length &&
+      nextProps.location.pathname === "/dashboard/edit-profile"
+    ) {
+      nextProps.history.push("/dashboard/create-new-profile");
+    }
+    if (
+      Object.keys(nextProps.profile.profile).length &&
+      nextProps.location.pathname === "/dashboard/create-new-profile"
+    ) {
+      nextProps.history.push("/dashboard/edit-profile");
+    }
     // Used for specified page data loading
     if (
       nextProps.profile.profile !== null &&
-      Object.keys(nextProps.profile.profile).length
+      Object.keys(nextProps.profile.profile).length > 0
     ) {
       const { profile } = nextProps.profile;
-      this.setState({
-        handle: profile.handle,
-        status: profile.status,
-        company: profile.company,
-        location: profile.location,
-        skills: profile.skills,
-        githubusername: profile.githubusername,
-        website: profile.website,
-        bio: profile.bio,
-        twitter: profile.social.twitter,
-        youtube: profile.social.youtube,
-        facebook: profile.social.facebook,
-        instagram: profile.social.instagram,
-        linkedin: profile.social.linkedin,
-        socialAreaExpand: true,
-        Blocking: false,
-        createOrEdit: "Edit"
-      });
+      if (profile !== null) {
+        this.setState({
+          handle: profile.handle,
+          status: profile.status,
+          company: profile.company,
+          location: profile.location,
+          skills: profile.skills,
+          githubusername: profile.githubusername,
+          website: profile.website,
+          bio: profile.bio,
+          twitter: profile.social && profile.social.twitter,
+          youtube: profile.social && profile.social.youtube,
+          facebook: profile.social && profile.social.facebook,
+          instagram: profile.social && profile.social.instagram,
+          linkedin: profile.social && profile.social.linkedin,
+          socialAreaExpand: true,
+          Blocking: false,
+          createOrEdit: "Edit"
+        });
+      }
     }
   }
 
