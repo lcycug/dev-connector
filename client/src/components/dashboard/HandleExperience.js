@@ -50,6 +50,7 @@ class HandleExperience extends Component {
   }
   handleSubmit = event => {
     event.preventDefault();
+    debugger;
     if (this.state.expOrEdu === "Experience") {
       const experience = {
         title: this.state.title,
@@ -61,7 +62,7 @@ class HandleExperience extends Component {
         description: this.state.description
       };
       this.props.createExperience(experience, this.props.history);
-    } else {
+    } else if (this.state.expOrEdu === "Education") {
       const education = {
         school: this.state.school,
         degree: this.state.degree,
@@ -71,7 +72,7 @@ class HandleExperience extends Component {
         current: this.state.current,
         description: this.state.description
       };
-      this.props.createExperience(education, this.props.history);
+      this.props.createEducation(education, this.props.history);
     }
     this.setState({ Blocking: false });
   };

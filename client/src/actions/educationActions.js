@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const createEducation = (educationData, history) => dispatch => {
   axios
-    .post("/api/profile/experience", educationData)
+    .post("/api/profile/education", educationData)
     .then(res => {
       dispatch({
         type: CREATE_EDUCATION,
