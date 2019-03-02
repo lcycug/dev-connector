@@ -2,7 +2,9 @@ import {
   SET_PROFILE_LOADING,
   GET_PROFILE,
   CLEAR_CURRENT_PROFILE,
-  CREATE_PROFILE
+  CREATE_PROFILE,
+  CREATE_EXPERIENCE,
+  CREATE_EDUCATION
 } from "../actions/types";
 
 const initialState = {
@@ -30,6 +32,16 @@ export default (state = initialState, action) => {
         profile: null
       };
     case CREATE_PROFILE:
+      return {
+        ...state,
+        profile: action.payload
+      };
+    case CREATE_EXPERIENCE:
+      return {
+        ...state,
+        profile: action.payload
+      };
+    case CREATE_EDUCATION:
       return {
         ...state,
         profile: action.payload

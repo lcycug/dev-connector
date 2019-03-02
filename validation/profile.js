@@ -5,7 +5,7 @@ module.exports = function validateProfileInput(data) {
   const errors = {};
   const handle = !isEmpty(data.handle) ? data.handle : "";
   const status = !isEmpty(data.status) ? data.status : "";
-  const skills = !isEmpty(data.skills) ? data.skills : "";
+  const skills = !isEmpty(data.skills) ? data.skills.toString() : "";
 
   if (Validator.isEmpty(handle)) {
     errors.handle = "Handle is required.";

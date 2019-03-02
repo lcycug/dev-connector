@@ -123,10 +123,12 @@ router.post(
     if (req.body.githubusername)
       profileFields.githubusername = req.body.githubusername;
     // Skills
-    if (typeof req.body.skills)
+    if (typeof req.body.skills) {
       profileFields.skills = req.body.skills
+        .toString()
         .split(",")
         .map(item => item.toString().trim());
+    }
 
     // Social
     profileFields.social = {};
@@ -175,9 +177,10 @@ router.post(
   "/experience",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
+    console.log(req.body);
     const { errors, isValid } = validateExperienceInput(req.body);
     if (!isValid) {
-      return res.json({ errors });
+      return res.status(400).json(errors);
     }
 
     Profile.findOne({ user: req.user.id }).then(profile => {
@@ -197,7 +200,10 @@ router.post(
 
       profile.experience.unshift(newExp);
 
-      profile.save().then(profile => res.json(profile));
+      profile
+        .save()
+        .then(profile => res.json(profile))
+        .catch(err => console.log(err));
     });
   }
 );
@@ -213,7 +219,7 @@ router.post(
   (req, res) => {
     const { errors, isValid } = validateEducationInput(req.body);
     if (!isValid) {
-      return res.json({ errors });
+      return res.status(400).json(errors);
     }
 
     Profile.findOne({ user: req.user.id }).then(profile => {

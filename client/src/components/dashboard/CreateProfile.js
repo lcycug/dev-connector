@@ -10,25 +10,24 @@ import TextFieldGroup from "../common/TextFieldGroup";
 class CreateProfile extends Component {
   constructor(props) {
     super(props);
-    const profileExisted =
-      props.profile.profile !== null &&
-      Object.keys(props.profile.profile).length > 0;
+    const { profile } = props.profile;
+    const profileExisted = profile !== null && Object.keys(profile).length > 0;
     this.state = {
-      handle: profileExisted ? props.profile.profile.handle : "",
-      status: profileExisted ? props.profile.profile.status : "",
-      company: profileExisted ? props.profile.profile.company : "",
-      location: profileExisted ? props.profile.profile.location : "",
-      skills: profileExisted ? props.profile.profile.skills : [],
-      githubusername: profileExisted
-        ? props.profile.profile.githubusername
+      handle: profileExisted ? profile.handle : "",
+      status: profileExisted ? profile.status : "",
+      company: profileExisted ? profile.company : "",
+      location: profileExisted ? profile.location : "",
+      skills: profileExisted ? profile.skills && profile.skills.toString() : "",
+      githubusername: profileExisted ? profile.githubusername : "",
+      website: profileExisted ? profile.website : "",
+      bio: profileExisted ? profile.bio : "",
+      twitter: profileExisted ? profile.social && profile.social.twitter : "",
+      youtube: profileExisted ? profile.social && profile.social.youtube : "",
+      facebook: profileExisted ? profile.social && profile.social.facebook : "",
+      instagram: profileExisted
+        ? profile.social && profile.social.instagram
         : "",
-      website: profileExisted ? props.profile.profile.website : "",
-      bio: profileExisted ? props.profile.profile.bio : "",
-      twitter: profileExisted ? props.profile.profile.social.twitter : "",
-      youtube: profileExisted ? props.profile.profile.social.youtube : "",
-      facebook: profileExisted ? props.profile.profile.social.facebook : "",
-      instagram: profileExisted ? props.profile.profile.social.instagram : "",
-      linkedin: profileExisted ? props.profile.profile.social.linkedin : "",
+      linkedin: profileExisted ? profile.social && profile.social.linkedin : "",
       errors: {},
       socialAreaExpand: profileExisted ? true : false,
       Blocking: false,
@@ -71,7 +70,7 @@ class CreateProfile extends Component {
           status: profile.status,
           company: profile.company,
           location: profile.location,
-          skills: profile.skills,
+          skills: profile.skills && profile.skills.toString(),
           githubusername: profile.githubusername,
           website: profile.website,
           bio: profile.bio,

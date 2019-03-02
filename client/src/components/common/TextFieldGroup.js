@@ -14,7 +14,8 @@ export default function TextFieldGroup({
   options,
   required,
   icon,
-  disabled
+  disabled,
+  label
 }) {
   let selectOptions;
   if (group === "select") {
@@ -86,26 +87,46 @@ export default function TextFieldGroup({
         <div className="form-group">
           {/* Input */}
           {required ? <i className="required fas fa-asterisk" /> : null}
-          <input
-            type={type}
-            className={classnames("form-control form-control-lg", {
-              "is-invalid": error
-            })}
-            placeholder={placeholder}
-            autoComplete="off" //'off' not work for Chrome
-            name={name}
-            value={
-              Array.isArray(value)
-                ? value.toString()
-                : value === undefined
-                ? ""
-                : value
-            }
-            onChange={onChange}
-            disabled={disabled}
-          />
-          {info && <small className="form-text text-muted">{info}</small>}
-          {error && <div className="invalid-feedback">{error}</div>}
+          {type === "checkbox" ? (
+            <>
+              <div className="form-check mb-4">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name={name}
+                  id="checkbox"
+                  onChange={onChange}
+                  value={value}
+                />
+                <label className="form-check-label" htmlFor="checkbox">
+                  {label}
+                </label>
+              </div>
+            </>
+          ) : (
+            <>
+              <input
+                type={type}
+                className={classnames("form-control form-control-lg", {
+                  "is-invalid": error
+                })}
+                placeholder={placeholder}
+                autoComplete="off" //'off' not work for Chrome
+                name={name}
+                value={
+                  Array.isArray(value)
+                    ? value.toString()
+                    : value === undefined
+                    ? ""
+                    : value
+                }
+                onChange={onChange}
+                disabled={disabled}
+              />
+              {info && <small className="form-text text-muted">{info}</small>}
+              {error && <div className="invalid-feedback">{error}</div>}
+            </>
+          )}
         </div>
       )}
     </>
@@ -117,7 +138,6 @@ TextFieldGroup.propTypes = {
   name: PropTypes.string.isRequired,
   error: PropTypes.string,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string,
   info: PropTypes.string,
   icon: PropTypes.string,
   placeholder: PropTypes.string,

@@ -16,6 +16,7 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
 import CreateProfile from "./components/dashboard/CreateProfile";
+import HandleExperience from "./components/dashboard/HandleExperience";
 
 if (localStorage.getItem("jwtToken")) {
   const token = localStorage.getItem("jwtToken");
@@ -53,6 +54,16 @@ class App extends Component {
             exact
             path="/dashboard/edit-profile"
             component={CreateProfile}
+          />
+          <PrivateRoute
+            exact
+            path="/dashboard/add-experience"
+            component={HandleExperience}
+          />
+          <PrivateRoute
+            exact
+            path="/dashboard/add-education"
+            component={HandleExperience}
           />
         </Switch>
         <Footer />
