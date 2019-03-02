@@ -5,7 +5,8 @@ import {
   GET_PROFILE,
   CLEAR_CURRENT_PROFILE,
   CREATE_PROFILE,
-  GET_ERRORS
+  GET_ERRORS,
+  GET_PROFILES
 } from "./types";
 
 export const getCurrentProfile = () => dispatch => {
@@ -47,6 +48,42 @@ export const createProfile = (profileData, history) => dispatch => {
       });
       history.push("/dashboard");
     })
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
+};
+
+export const getProfiles = () => dispatch => {
+  setProfileLoading();
+  axios
+    .get("/api/profile/all")
+    .then(res =>
+      dispatch({
+        type: GET_PROFILES,
+        payload: res.data
+      })
+    )
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
+};
+
+export const getHandleProfile = handle => dispatch => {
+  setProfileLoading();
+  axios
+    .get(`/api/profile/handle/${handle}`)
+    .then(res =>
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data
+      })
+    )
     .catch(err =>
       dispatch({
         type: GET_ERRORS,

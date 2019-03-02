@@ -17,6 +17,8 @@ import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
 import CreateProfile from "./components/dashboard/CreateProfile";
 import HandleExperience from "./components/dashboard/HandleExperience";
+import Profiles from "./components/profiles/Profiles";
+import Profile from "./components/profiles/Profile";
 
 if (localStorage.getItem("jwtToken")) {
   const token = localStorage.getItem("jwtToken");
@@ -42,6 +44,8 @@ class App extends Component {
         <Navbar />
         <Switch>
           <Route exact path="/" component={Landing} />
+          <Route exact path="/profiles" component={Profiles} />
+          <Route path="/profile" component={Profile} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <PrivateRoute exact path="/dashboard" component={Dashboard} />

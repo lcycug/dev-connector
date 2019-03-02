@@ -4,7 +4,8 @@ import {
   CLEAR_CURRENT_PROFILE,
   CREATE_PROFILE,
   CREATE_EXPERIENCE,
-  CREATE_EDUCATION
+  CREATE_EDUCATION,
+  GET_PROFILES
 } from "../actions/types";
 
 const initialState = {
@@ -45,6 +46,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         profile: action.payload
+      };
+    case GET_PROFILES:
+      return {
+        ...state,
+        profiles: action.payload,
+        loading: false
       };
     default:
       return state;
