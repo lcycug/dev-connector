@@ -12,6 +12,8 @@ import {
   setProfileLoading
 } from "../../actions/profileActions";
 
+import { deleteExperience } from "../../actions/experienceActions";
+
 class Dashboard extends Component {
   componentDidMount() {
     // if (this.props.profile.profile === null) {
@@ -19,6 +21,9 @@ class Dashboard extends Component {
     this.props.getCurrentProfile();
     // }
   }
+  handleClick = event => {
+    this.props.deleteExperience(event.target.id, event.target.name);
+  };
   render() {
     const { user } = this.props.auth;
     const { profile, loading } = this.props.profile;
@@ -54,10 +59,13 @@ class Dashboard extends Component {
                 Add Education
               </Link>
             </div>
-
-            <Table experiences={this.props.profile.profile.experience} />
             <Table
-              experiences={this.props.profile.profile.education}
+              experiences={profile.experience}
+              handleDeleteClick={e => this.handleClick(e)}
+            />
+            <Table
+              experiences={profile.education}
+              handleDeleteClick={e => this.handleClick(e)}
               type="Education"
             />
           </>
@@ -82,7 +90,8 @@ Dashboard.propTypes = {
   auth: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
   getCurrentProfile: PropTypes.func.isRequired,
-  setProfileLoading: PropTypes.func.isRequired
+  setProfileLoading: PropTypes.func.isRequired,
+  deleteExperience: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -92,5 +101,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getCurrentProfile, setProfileLoading }
+  { getCurrentProfile, setProfileLoading, deleteExperience }
 )(Dashboard);

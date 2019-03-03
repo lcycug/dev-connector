@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import * as moment from "moment";
 
 import { getHandleProfile } from "../../actions/profileActions";
 import Spinner from "../common/Spinner";
 import GithubCard from "../common/GithubCard";
+import ExperienceCard from "./ExperienceCard";
 
 class Profile extends Component {
   constructor(props) {
@@ -104,66 +104,12 @@ class Profile extends Component {
 
           {/* <!-- Profile Creds --> */}
           <div className="row">
-            <div className="col-md-6">
-              <h3 className="text-center text-info">Experience</h3>
-              <ul className="list-group">
-                {profile.experience &&
-                  profile.experience.length &&
-                  profile.experience.map((exp, i) => (
-                    <>
-                      <li key={i} className="list-group-item">
-                        <h4>{exp.company}</h4>
-                        <p>
-                          {moment(exp.from).format("MMM YYYY")} -{" "}
-                          {exp.current
-                            ? "Now"
-                            : moment(exp.to).format("MMM YYYY")}
-                        </p>
-                        <p>
-                          <strong>Position:</strong> {exp.title}
-                        </p>
-                        <p>
-                          <strong>Description:</strong> {exp.description}
-                        </p>
-                      </li>
-                    </>
-                  ))}
-              </ul>
-            </div>
-            <div className="col-md-6">
-              <h3 className="text-center text-info">Education</h3>
-              <ul className="list-group">
-                {profile.education &&
-                  profile.education.length &&
-                  profile.education.map((edu, i) => (
-                    <>
-                      <li key={i} className="list-group-item">
-                        <h4>{edu.school}</h4>
-                        <p>
-                          {moment(edu.from).format("MMM YYYY")} -{" "}
-                          {edu.current
-                            ? "Now"
-                            : moment(edu.to).format("MMM YYYY")}
-                        </p>
-                        <p>
-                          <strong>Degree: </strong>
-                          {edu.degree}
-                        </p>
-                        <p>
-                          <strong>Field Of Study: </strong>
-                          {edu.fieldofstudy}
-                        </p>
-                        <p>
-                          <strong>Description: </strong>
-                          {edu.description}
-                        </p>
-                      </li>
-                    </>
-                  ))}
-              </ul>
-            </div>
+            <ExperienceCard
+              type="Experience"
+              experiences={profile.experience}
+            />
+            <ExperienceCard type="Education" experiences={profile.education} />
           </div>
-
           {/* <!-- Profile Github --> */}
           <GithubCard username={profile.githubusername} />
         </>
