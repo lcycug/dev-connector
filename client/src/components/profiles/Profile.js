@@ -86,18 +86,20 @@ class Profile extends Component {
                     <hr />
                   </>
                 ) : null}
-                <h3 className="text-center text-info">Skill Set</h3>
-                <div className="row">
-                  <div className="d-flex flex-wrap justify-content-center align-items-center">
-                    {profile.skills &&
-                      profile.skills.length &&
-                      profile.skills.map(skill => (
-                        <div key={skill} className="p-3">
-                          <i className="fa fa-check" /> {skill}
-                        </div>
-                      ))}
-                  </div>
-                </div>
+                {profile.skills && profile.skills.length > 0 ? (
+                  <>
+                    <h3 className="text-center text-info">Skill Set</h3>
+                    <div className="row">
+                      <div className="d-flex flex-wrap justify-content-center align-items-center">
+                        {profile.skills.map(skill => (
+                          <div key={skill} className="p-3">
+                            <i className="fa fa-check" /> {skill}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : null}
               </div>
             </div>
           </div>
