@@ -127,7 +127,13 @@ router.post(
           post.likes.unshift({ user: req.user.id });
           post
             .save()
-            .then(post => res.json(post))
+            // .then(post => res.json(post))
+            .then(post => {
+              Post.find()
+                .sort({ date: -1 })
+                .then(posts => res.json(posts))
+                .catch(err => res.status(404).json(err));
+            })
             .catch(err => res.json(err));
         });
       })

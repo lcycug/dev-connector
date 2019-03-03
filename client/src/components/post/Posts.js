@@ -4,14 +4,19 @@ import { Link } from "react-router-dom";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 
-import { getPosts } from "../../actions/postActions";
+import { getPosts, likePost } from "../../actions/postActions";
+import { getCurrentProfile } from "../../actions/profileActions";
 import Spinner from "../common/Spinner";
 
 class Posts extends Component {
   constructor(props) {
     super(props);
     this.props.getPosts();
+    if (this.props.profile.profile === null) {
+      this.props.getCurrentProfile();
+    }
     this.state = {
+      profile: this.props.profile, // Used for like a comment css
       posts: null,
       loading: true
     };
@@ -23,11 +28,21 @@ class Posts extends Component {
         loading: false
       });
     }
+    if (nextProps.profile) {
+      this.setState({
+        profile: nextProps.profile.profile,
+        loading: false
+      });
+    }
   }
+  handleClick = event => {
+    debugger;
+    this.props.likePost(event.currentTarget.id);
+  };
   render() {
-    const { posts, loading } = this.state;
+    const { posts, loading, profile } = this.state;
     let postsContent;
-    if (loading || posts === null) {
+    if (loading || posts === null || profile === null) {
       //Loading data
       postsContent = <Spinner />;
     } else {
@@ -55,15 +70,24 @@ class Posts extends Component {
                       </div>
                       <div className="col-md-10">
                         <p className="lead">{post.text}</p>
-                        <button type="button" className="btn btn-light mr-1">
+                        <button
+                          id={post._id}
+                          type="button"
+                          className="btn btn-light mr-1"
+                          onClick={e => this.handleClick(e)}
+                        >
                           <i
                             className={classnames("fas fa-thumbs-up", {
                               "text-info":
-                                post.likes.filter(id => id === post.likes.user)
-                                  .length > 0,
+                                post.likes.filter(
+                                  like =>
+                                    like.user.toString() === profile.user._id
+                                ).length !== 0,
                               "text-secondary":
-                                post.likes.filter(id => id === post.likes.user)
-                                  .length === 0
+                                post.likes.filter(
+                                  like =>
+                                    like.user.toString() === profile.user._id
+                                ).length === 0
                             })}
                           />
                           <span className="badge badge-light">
@@ -91,13 +115,15 @@ class Posts extends Component {
 
 Posts.propTypes = {
   post: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
   getPosts: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  post: state.post
+  post: state.post,
+  profile: state.profile
 });
 export default connect(
   mapStateToProps,
-  { getPosts }
+  { getPosts, likePost, getCurrentProfile }
 )(Posts);
