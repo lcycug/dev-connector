@@ -21,6 +21,7 @@ import HandleExperience from "./components/dashboard/HandleExperience";
 import Profiles from "./components/profiles/Profiles";
 import Profile from "./components/profiles/Profile";
 import Feed from "./components/post/Feed";
+import Comment from "./components/post/Comment";
 
 if (localStorage.getItem("jwtToken")) {
   const token = localStorage.getItem("jwtToken");
@@ -84,6 +85,7 @@ class App extends Component {
             component={HandleExperience}
           />
           <PrivateRoute exact path="/feed" component={Feed} />
+          <PrivateRoute path="/feed/post" component={Comment} />
         </Switch>
         <Footer />
       </>

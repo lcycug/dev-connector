@@ -24,7 +24,7 @@ class Posts extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.post) {
       this.setState({
-        posts: nextProps.post.post,
+        posts: nextProps.post.posts,
         loading: false
       });
     }
@@ -94,7 +94,10 @@ class Posts extends Component {
                             {post.likes && post.likes.length}
                           </span>
                         </button>
-                        <Link to="/feed/post" className="btn btn-info mr-1">
+                        <Link
+                          to={`/feed/post/${post._id}`}
+                          className="btn btn-info mr-1"
+                        >
                           Comments
                         </Link>
                         {/* <button type="button" className="btn btn-danger mr-1">

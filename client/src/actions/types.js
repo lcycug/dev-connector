@@ -8,3 +8,4 @@ export const CREATE_PROFILE = "CREATE_PROFILE";
 export const CREATE_EXPERIENCE = "CREATE_EXPERIENCE";
 export const CREATE_EDUCATION = "CREATE_EDUCATION";
 export const GET_POSTS = "GET_POSTS";
+export const GET_POST = "GET_POST";
