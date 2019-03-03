@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
@@ -18,8 +18,8 @@ class Profiles extends Component {
       profilesContent = <Spinner />;
     } else {
       // After loading
-      profilesContent = profiles.map(profile => (
-        <>
+      profilesContent = profiles.map((profile, i) => (
+        <Fragment key={i}>
           <div className="card card-body bg-light mb-3">
             <div className="row">
               <div className="col-2">
@@ -45,7 +45,7 @@ class Profiles extends Component {
                 <ul className="list-group">
                   {profile.skills &&
                     profile.skills.map(skill => (
-                      <li className="list-group-item">
+                      <li key={skill} className="list-group-item">
                         <i className="fa fa-check pr-1" />
                         {skill}
                       </li>
@@ -54,7 +54,7 @@ class Profiles extends Component {
               </div>
             </div>
           </div>
-        </>
+        </Fragment>
       ));
     }
 

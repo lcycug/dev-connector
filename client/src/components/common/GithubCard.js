@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import Spinner from "./Spinner";
 
 class GithubCard extends Component {
@@ -23,7 +23,6 @@ class GithubCard extends Component {
       )
         .then(res => res.json())
         .then(data => {
-          debugger;
           this.setState({
             repos: !data.message ? data : [],
             loading: false
@@ -44,8 +43,8 @@ class GithubCard extends Component {
             <hr />
             <h3 className="mb-4">Latest Github Repos</h3>
             <div className="card card-body mb-2">
-              {repos.map(repo => (
-                <>
+              {repos.map((repo, i) => (
+                <Fragment key={i}>
                   <div key={repo.id} className="row">
                     <div className="col-md-6">
                       <h4>
@@ -73,7 +72,7 @@ class GithubCard extends Component {
                       </span>
                     </div>
                   </div>
-                </>
+                </Fragment>
               ))}
             </div>
           </div>

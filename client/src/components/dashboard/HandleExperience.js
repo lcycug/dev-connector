@@ -50,7 +50,6 @@ class HandleExperience extends Component {
   }
   handleSubmit = event => {
     event.preventDefault();
-    debugger;
     if (this.state.expOrEdu === "Experience") {
       const experience = {
         title: this.state.title,
