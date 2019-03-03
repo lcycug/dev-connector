@@ -37,7 +37,15 @@ router.post(
       text: req.body.text
     });
 
-    newPost.save().then(post => res.json(post));
+    newPost
+      .save()
+      // .then(post => res.json(post))
+      .then(post => {
+        Post.find()
+          .sort({ date: -1 })
+          .then(posts => res.json(posts));
+      })
+      .catch(err => console.error(err));
   }
 );
 
