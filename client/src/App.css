@@ -46,3 +46,13 @@ i.required {
   left: -15px;
   top: 30px;
 }
+
+#nprogress .bar {
+  background: rgb(100, 230, 30);
+  height: 2px;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: red;
+  border-left-color: red;
+}

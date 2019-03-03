@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
 import jwtDecode from "jwt-decode";
+import NProgress from "nprogress";
 
 import PrivateRoute from "./components/common/PrivateRoute";
 
@@ -37,7 +38,19 @@ if (localStorage.getItem("jwtToken")) {
   }
 }
 
+NProgress.configure({ showSpinner: false });
+
 class App extends Component {
+  componentWillUpdate(nextProps) {
+    if (this.props.location !== nextProps.location) {
+      NProgress.start();
+    }
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      NProgress.done();
+    }
+  }
   render() {
     return (
       <>
@@ -76,4 +89,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);
