@@ -3,40 +3,22 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as moment from "moment";
-import axios from "axios";
 
 import { getHandleProfile } from "../../actions/profileActions";
 import Spinner from "../common/Spinner";
+import GithubCard from "../common/GithubCard";
 
 class Profile extends Component {
   constructor(props) {
     super(props);
-    this.props.getHandleProfile(
-      this.props.location.pathname.substring("/profile/".length)
-    );
+    const handle = this.props.location.pathname.substring("/profile/".length);
+    this.props.getHandleProfile(handle);
     this.state = {
-      username: "lcycug",
-      clientId: "631ed56a6bbe89c1bfba",
-      clientSecret: "62f8d22d02394e8b9d4f151fc26fb6edbfb46b6a",
       loading: true,
-      profile: null,
-      repos: []
+      profile: null
     };
   }
-  componentDidMount() {
-    const { username, clientId, clientSecret } = this.state;
-    fetch(
-      `https://api.github.com/users/${username}/repos?sort=created&per_page=5&client_id=${clientId}&client_secret=${clientSecret}`
-    )
-      .then(res => {
-        debugger;
-        console.log(res);
-        this.setState({
-          repos: res
-        });
-      })
-      .catch(err => console.log(err));
-  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.profile) {
       this.setState({
@@ -78,6 +60,7 @@ class Profile extends Component {
                       Object.keys(profile.social).length &&
                       Object.keys(profile.social).map(social => (
                         <a
+                          key={social}
                           className="text-white p-2"
                           href={profile.social[social]}
                         >
@@ -109,7 +92,7 @@ class Profile extends Component {
                     {profile.skills &&
                       profile.skills.length &&
                       profile.skills.map(skill => (
-                        <div className="p-3">
+                        <div key={skill} className="p-3">
                           <i className="fa fa-check" /> {skill}
                         </div>
                       ))}
@@ -126,9 +109,9 @@ class Profile extends Component {
               <ul className="list-group">
                 {profile.experience &&
                   profile.experience.length &&
-                  profile.experience.map(exp => (
+                  profile.experience.map((exp, i) => (
                     <>
-                      <li className="list-group-item">
+                      <li key={i} className="list-group-item">
                         <h4>{exp.company}</h4>
                         <p>
                           {moment(exp.from).format("MMM YYYY")} -{" "}
@@ -152,9 +135,9 @@ class Profile extends Component {
               <ul className="list-group">
                 {profile.education &&
                   profile.education.length &&
-                  profile.education.map(edu => (
+                  profile.education.map((edu, i) => (
                     <>
-                      <li className="list-group-item">
+                      <li key={i} className="list-group-item">
                         <h4>{edu.school}</h4>
                         <p>
                           {moment(edu.from).format("MMM YYYY")} -{" "}
@@ -182,30 +165,7 @@ class Profile extends Component {
           </div>
 
           {/* <!-- Profile Github --> */}
-          <div ref="myRef">
-            <hr />
-            <h3 className="mb-4">Latest Github Repos</h3>
-            <div className="card card-body mb-2">
-              <div className="row">
-                <div className="col-md-6">
-                  <h4>
-                    <a href="/" className="text-info" target="_blank">
-                      {" "}
-                      Repository One
-                    </a>
-                  </h4>
-                  <p>Repository description</p>
-                </div>
-                <div className="col-md-6">
-                  <span className="badge badge-info mr-1">Stars: 44</span>
-                  <span className="badge badge-secondary mr-1">
-                    Watchers: 21
-                  </span>
-                  <span className="badge badge-success">Forks: 122</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <GithubCard username={profile.githubusername} />
         </>
       );
     }
