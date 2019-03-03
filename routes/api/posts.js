@@ -178,6 +178,48 @@ router.post(
 );
 
 /**
+ * @router  POST /api/posts/likeunlike/:post_id
+ * @desc    Like a post
+ * @access  Private
+ */
+router.post(
+  "/likeunlike/:post_id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const errors = {};
+    Profile.findOne({ user: req.user.id })
+      .then(profile => {
+        Post.findById(req.params.post_id).then(post => {
+          if (
+            post.likes.filter(like => like.user.toString() === req.user.id)
+              .length
+          ) {
+            // Unlike
+            // Remove like
+            post.likes = [
+              ...post.likes.filter(like => like.user.toString() !== req.user.id)
+            ];
+          } else {
+            // Like
+            post.likes.unshift({ user: req.user.id });
+          }
+          post
+            .save()
+            // .then(post => res.json(post))
+            .then(post => {
+              Post.find()
+                .sort({ date: -1 })
+                .then(posts => res.json(posts))
+                .catch(err => res.status(404).json(err));
+            })
+            .catch(err => res.json(err));
+        });
+      })
+      .catch(err => res.json(err));
+  }
+);
+
+/**
  * @router  POST /api/posts/comment/:post_id
  * @desc    Comment a post
  * @access  Private

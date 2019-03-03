@@ -39,7 +39,7 @@ export const getPosts = () => dispatch => {
 
 export const likePost = id => dispatch => {
   axios
-    .post(`/api/posts/like/${id}`)
+    .post(`/api/posts/likeunlike/${id}`)
     .then(res =>
       dispatch({
         type: GET_POSTS,
