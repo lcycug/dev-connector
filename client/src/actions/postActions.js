@@ -11,6 +11,12 @@ export const createPost = postData => dispatch => {
         payload: res.data
       })
     )
+    .then(() =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      })
+    )
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -26,6 +32,12 @@ export const getSinglePost = id => dispatch => {
       dispatch({
         type: GET_POST,
         payload: res.data
+      })
+    )
+    .then(() =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
       })
     )
     .catch(err =>
@@ -45,6 +57,12 @@ export const getPosts = () => dispatch => {
         payload: res.data
       })
     )
+    .then(() =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      })
+    )
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -60,6 +78,12 @@ export const likePost = id => dispatch => {
       dispatch({
         type: GET_POSTS,
         payload: res.data
+      })
+    )
+    .then(() =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
       })
     )
     .catch(err =>
@@ -78,6 +102,12 @@ export const postComment = (postId, commentData) => dispatch => {
       dispatch({
         type: GET_POST,
         payload: res.data
+      })
+    )
+    .then(() =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
       })
     )
     .catch(err =>

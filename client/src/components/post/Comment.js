@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 import { getSinglePost, postComment } from "../../actions/postActions";
 import Spinner from "../common/Spinner";
@@ -21,7 +22,7 @@ class Comment extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.post) {
-      this.setState({ post: nextProps.post.post, loading: false });
+      this.setState({ post: nextProps.post.post, loading: false, comment: "" });
     }
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
@@ -36,7 +37,7 @@ class Comment extends Component {
     event.preventDefault();
     const { comment, post } = this.state;
     this.props.postComment(post._id, { text: comment });
-    this.setState({ comment: "", errors: {} });
+    // this.setState({ comment: "", errors: {} });
   };
   render() {
     const { loading, post, errors } = this.state;
@@ -50,13 +51,13 @@ class Comment extends Component {
           <div className="card card-body mb-3">
             <div className="row">
               <div className="col-md-2">
-                <a href="profile.html">
+                <Link to={`/profile/${post.name}`}>
                   <img
                     className="rounded-circle d-none d-md-block"
                     src={post.avatar}
                     alt={post.name}
                   />
-                </a>
+                </Link>
                 <br />
                 <p className="text-center">{post.name}</p>
               </div>
@@ -90,52 +91,30 @@ class Comment extends Component {
           </div>
           {/* <!-- Comment Feed --> */}
           <div className="comments">
-            {/* <!-- Comment Item --> */}
-            <div className="card card-body mb-3">
-              <div className="row">
-                <div className="col-md-2">
-                  <a href="profile.html">
-                    <img
-                      className="rounded-circle d-none d-md-block"
-                      src="https://www.gravatar.com/avatar/anything?s=200&d=mm"
-                      alt=""
-                    />
-                  </a>
-                  <br />
-                  <p className="text-center">Kevin Smith</p>
-                </div>
-                <div className="col-md-10">
-                  <p className="lead">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Sint possimus corporis sunt necessitatibus! Minus nesciunt
-                    soluta suscipit nobis.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="card card-body mb-3">
-              <div className="row">
-                <div className="col-md-2">
-                  <a href="profile.html">
-                    <img
-                      className="rounded-circle d-none d-md-block"
-                      src="https://www.gravatar.com/avatar/anything?s=200&d=mm"
-                      alt=""
-                    />
-                  </a>
-                  <br />
-                  <p className="text-center">Karen Johnson</p>
-                </div>
-                <div className="col-md-10">
-                  <p className="lead">
-                    {" "}
-                    Amet accusamus distinctio cupiditate blanditiis dolor? Illo
-                    perferendis eveniet cum cupiditate aliquam?
-                  </p>
-                </div>
-              </div>
-            </div>
+            {post.comments &&
+              post.comments.map(comment => (
+                <Fragment>
+                  {/* <!-- Comment Item --> */}
+                  <div className="card card-body mb-3">
+                    <div className="row">
+                      <div className="col-md-2">
+                        <Link to={`/profile/${comment.name}`}>
+                          <img
+                            className="rounded-circle d-none d-md-block"
+                            src={comment.avatar}
+                            alt=""
+                          />
+                        </Link>
+                        <br />
+                        <p className="text-center">{comment.name}</p>
+                      </div>
+                      <div className="col-md-10">
+                        <p className="lead">{comment.text}</p>
+                      </div>
+                    </div>
+                  </div>
+                </Fragment>
+              ))}
           </div>
         </>
       );

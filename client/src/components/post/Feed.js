@@ -27,7 +27,7 @@ class Feed extends Component {
   handleSubmit = event => {
     event.preventDefault();
     this.props.createPost({ text: this.state.text });
-    this.setState({ text: "" });
+    // this.setState({ text: "" });
   };
   render() {
     const { errors } = this.state;
