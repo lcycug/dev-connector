@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import { createPost } from "../../actions/postActions";
+import { getCurrentProfile } from "../../actions/profileActions";
 import TextFieldGroup from "../common/TextFieldGroup";
 import Posts from "./Posts";
 
@@ -10,13 +12,20 @@ class Feed extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      profile: null,
       text: "",
       errors: {}
     };
+    if (this.props.profile === null) {
+      this.props.getCurrentProfile();
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
+    }
+    if (nextProps.profile) {
+      this.setState({ profile: nextProps.profile.profile });
     }
   }
   handleChange = event => {
@@ -26,15 +35,27 @@ class Feed extends Component {
   };
   handleSubmit = event => {
     event.preventDefault();
-    this.props.createPost({ text: this.state.text });
+    const { profile } = this.state;
+    const postable = profile !== null && Object.keys(profile).length !== 0;
+    if (postable) {
+      this.props.createPost({ text: this.state.text });
+    }
     // this.setState({ text: "" });
   };
   render() {
-    const { errors } = this.state;
+    const { errors, profile } = this.state;
+    const postable = profile !== null && Object.keys(profile).length !== 0;
     return (
       <>
         <div className="feed">
           <div className="container">
+            {!postable && (
+              <div className="bg-warning text-center font-weight-bold p-3 mb-2">
+                <Link to="/dashboard/create-new-profile">
+                  Profile editing is the previous step for posting.
+                </Link>
+              </div>
+            )}
             <div className="row">
               <div className="col-md-12">
                 {/* <!-- Post Form --> */}
@@ -50,8 +71,11 @@ class Feed extends Component {
                           name="text"
                           value={this.state.text}
                           placeholder="Create a post"
-                          onChange={e => this.handleChange(e)}
+                          onChange={
+                            !postable ? null : e => this.handleChange(e)
+                          }
                           error={errors.text}
+                          disabled={!postable ? "disabled" : null}
                         />
                         <button type="submit" className="btn btn-dark mt-3">
                           Submit
@@ -72,14 +96,16 @@ class Feed extends Component {
 
 Feed.propTypes = {
   errors: PropTypes.object.isRequired,
-  createPost: PropTypes.func.isRequired
+  createPost: PropTypes.func.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  errors: state.errors
+  errors: state.errors,
+  profile: state.profile
 });
 
 export default connect(
   mapStateToProps,
-  { createPost }
+  { createPost, getCurrentProfile }
 )(Feed);

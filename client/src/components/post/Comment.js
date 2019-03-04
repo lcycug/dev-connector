@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import { getSinglePost, postComment } from "../../actions/postActions";
+import { getCurrentProfile } from "../../actions/profileActions";
 import Spinner from "../common/Spinner";
 import TextFieldGroup from "../common/TextFieldGroup";
 
@@ -12,6 +13,7 @@ class Comment extends Component {
     super(props);
     this.state = {
       post: null,
+      profile: null,
       loading: true,
       errors: {},
       comment: ""
@@ -19,10 +21,16 @@ class Comment extends Component {
     this.props.getSinglePost(
       this.props.location.pathname.substring("/feed/post/".length)
     );
+    if (this.props.profile.profile === null) {
+      this.props.getCurrentProfile();
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.post) {
       this.setState({ post: nextProps.post.post, loading: false, comment: "" });
+    }
+    if (nextProps.profile) {
+      this.setState({ profile: nextProps.profile.profile });
     }
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
@@ -35,12 +43,17 @@ class Comment extends Component {
   };
   handleSubmit = event => {
     event.preventDefault();
-    const { comment, post } = this.state;
-    this.props.postComment(post._id, { text: comment });
+    const { comment, post, profile } = this.state;
+    const postable = profile !== null && Object.keys(profile).length !== 0;
+    if (postable) {
+      this.props.postComment(post._id, { text: comment });
+    }
+
     // this.setState({ comment: "", errors: {} });
   };
   render() {
-    const { loading, post, errors } = this.state;
+    const { loading, post, errors, profile } = this.state;
+    const postable = profile !== null && Object.keys(profile).length !== 0;
     let commentContent;
     if (loading || post === null) {
       commentContent = <Spinner />;
@@ -81,6 +94,7 @@ class Comment extends Component {
                     value={this.state.comment}
                     error={errors.text}
                     onChange={e => this.handleChange(e)}
+                    disabled={postable ? null : "disabled"}
                   />
                   <button type="submit" className="btn btn-dark mt-3">
                     Submit
@@ -123,6 +137,13 @@ class Comment extends Component {
       <>
         <div className="post">
           <div className="container">
+            {!postable && (
+              <div className="bg-warning text-center font-weight-bold p-3 mb-2">
+                <Link to="/dashboard/create-new-profile">
+                  Profile editing is the previous step for posting.
+                </Link>
+              </div>
+            )}
             <div className="row">
               <div className="col-md-12">{commentContent}</div>
             </div>
@@ -137,15 +158,17 @@ Comment.propTypes = {
   post: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   postComment: PropTypes.func.isRequired,
-  getSinglePost: PropTypes.func.isRequired
+  getSinglePost: PropTypes.func.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   post: state.post,
+  profile: state.profile,
   errors: state.errors
 });
 
 export default connect(
   mapStateToProps,
-  { getSinglePost, postComment }
+  { getSinglePost, postComment, getCurrentProfile }
 )(Comment);

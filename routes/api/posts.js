@@ -251,7 +251,7 @@ router.post(
             .catch(err => res.json(err));
         });
       })
-      .catch(err => res.json(err));
+      .catch(err => res.status(404).json(err));
   }
 );
 

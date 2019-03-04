@@ -40,6 +40,7 @@ class Posts extends Component {
   };
   render() {
     const { posts, loading, profile } = this.state;
+    const Postable = profile !== null && Object.keys(profile).length !== 0;
     let postsContent;
     if (loading || posts === null || profile === null) {
       //Loading data
@@ -73,20 +74,22 @@ class Posts extends Component {
                           id={post._id}
                           type="button"
                           className="btn btn-light mr-1"
-                          onClick={e => this.handleClick(e)}
+                          onClick={!Postable ? null : e => this.handleClick(e)}
                         >
                           <i
                             className={classnames("fas fa-thumbs-up", {
-                              "text-info":
-                                post.likes.filter(
-                                  like =>
-                                    like.user.toString() === profile.user._id
-                                ).length !== 0,
-                              "text-secondary":
-                                post.likes.filter(
-                                  like =>
-                                    like.user.toString() === profile.user._id
-                                ).length === 0
+                              "text-info": !Postable
+                                ? false
+                                : post.likes.filter(
+                                    like =>
+                                      like.user.toString() === profile.user._id
+                                  ).length !== 0,
+                              "text-secondary": !Postable
+                                ? true
+                                : post.likes.filter(
+                                    like =>
+                                      like.user.toString() === profile.user._id
+                                  ).length === 0
                             })}
                           />
                           <span className="badge badge-light">
