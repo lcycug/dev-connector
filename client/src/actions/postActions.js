@@ -95,7 +95,6 @@ export const likePost = id => dispatch => {
 };
 
 export const postComment = (postId, commentData) => dispatch => {
-  console.log("postId" + postId);
   axios
     .post(`/api/posts/comment/${postId}`, commentData)
     .then(res =>

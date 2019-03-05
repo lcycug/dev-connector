@@ -44,7 +44,6 @@ router.post(
           handle: profile.handle,
           text: req.body.text
         });
-        console.log(`newPost: ${newPost}`);
 
         newPost
           .save()
@@ -307,7 +306,6 @@ router.delete(
             }
           })
           .catch(err => {
-            console.log(err);
             errors.postnotfound = "Post not found.";
             res.status(404).json(errors);
           });

@@ -21,6 +21,7 @@ class Feed extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
+    this.setState({ text: "" });
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
     }
@@ -29,9 +30,13 @@ class Feed extends Component {
     }
   }
   handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
+    const { profile } = this.state;
+    const postable = profile !== null && Object.keys(profile).length !== 0;
+    if (postable) {
+      this.setState({
+        [event.target.name]: event.target.value
+      });
+    }
   };
   handleSubmit = event => {
     event.preventDefault();
@@ -71,9 +76,7 @@ class Feed extends Component {
                           name="text"
                           value={this.state.text}
                           placeholder="Create a post"
-                          onChange={
-                            !postable ? null : e => this.handleChange(e)
-                          }
+                          onChange={e => this.handleChange(e)}
                           error={errors.text}
                           disabled={!postable ? "disabled" : null}
                         />
