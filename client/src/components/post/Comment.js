@@ -64,7 +64,7 @@ class Comment extends Component {
           <div className="card card-body mb-3">
             <div className="row">
               <div className="col-md-2">
-                <Link to={`/profile/${post.name}`}>
+                <Link to={`/profile/${post.handle}`}>
                   <img
                     className="rounded-circle d-none d-md-block"
                     src={post.avatar}
@@ -112,7 +112,7 @@ class Comment extends Component {
                   <div className="card card-body mb-3">
                     <div className="row">
                       <div className="col-md-2">
-                        <Link to={`/profile/${comment.name}`}>
+                        <Link to={`/profile/${comment.handle}`}>
                           <img
                             className="rounded-circle d-none d-md-block"
                             src={comment.avatar}

@@ -30,22 +30,33 @@ router.post(
     if (!isValid) {
       return res.status(400).json(errors);
     }
-    const newPost = new Post({
-      user: req.user.id,
-      name: req.user.name,
-      avatar: req.user.avatar,
-      text: req.body.text
-    });
+    Profile.findOne({ user: req.user.id })
+      .then(profile => {
+        if (!profile) {
+          errors.profile = "No profile";
+          return res.status(404).json(errors);
+        }
 
-    newPost
-      .save()
-      // .then(post => res.json(post))
-      .then(post => {
-        Post.find()
-          .sort({ date: -1 })
-          .then(posts => res.json(posts));
+        const newPost = new Post({
+          user: req.user.id,
+          name: req.user.name,
+          avatar: req.user.avatar,
+          handle: profile.handle,
+          text: req.body.text
+        });
+        console.log(`newPost: ${newPost}`);
+
+        newPost
+          .save()
+          // .then(post => res.json(post))
+          .then(post => {
+            Post.find()
+              .sort({ date: -1 })
+              .then(posts => res.json(posts));
+          })
+          .catch(err => console.error(err));
       })
-      .catch(err => console.error(err));
+      .catch(err => res.status(400).json(err));
   }
 );
 
@@ -241,6 +252,7 @@ router.post(
           }
           post.comments.unshift({
             user: req.user.id,
+            handle: profile.handle,
             text: req.body.text,
             name: req.user.name,
             avatar: req.user.avatar
