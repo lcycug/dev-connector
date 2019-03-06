@@ -9,10 +9,9 @@ import { setCurrentUser, logoutUser } from "./actions/authActions";
 import store from "./components/store";
 import setAuthToken from "./utils/setAuthToken";
 
-import "./App.css";
-import Navbar from "./components/layout/Navbar";
-import Landing from "./components/layout/Landing";
-import Footer from "./components/layout/Footer";
+import Navbars from "./components/layout/Navbars";
+import LandingPage from "./components/layout/LandingPage";
+import Footers from "./components/layout/Footers";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
@@ -22,7 +21,7 @@ import Profiles from "./components/profiles/Profiles";
 import Profile from "./components/profiles/Profile";
 import Feed from "./components/post/Feed";
 import Comment from "./components/post/Comment";
-
+import "./App.css";
 if (localStorage.getItem("jwtToken")) {
   const token = localStorage.getItem("jwtToken");
   // Set axios defaults headers
@@ -56,9 +55,9 @@ class App extends Component {
   render() {
     return (
       <>
-        <Navbar />
+        <Navbars />
         <Switch>
-          <Route exact path="/" component={Landing} />
+          <Route exact path="/" component={LandingPage} />
           <Route exact path="/profiles" component={Profiles} />
           <Route path="/profile" component={Profile} />
           <Route exact path="/login" component={Login} />
@@ -87,7 +86,7 @@ class App extends Component {
           <PrivateRoute exact path="/feed" component={Feed} />
           <PrivateRoute path="/feed/post" component={Comment} />
         </Switch>
-        <Footer />
+        <Footers />
       </>
     );
   }

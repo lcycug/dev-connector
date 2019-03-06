@@ -50,7 +50,7 @@ class Feed extends Component {
     }
   };
   render() {
-    const { errors, postable, profile, posts } = this.state;
+    const { errors, postable } = this.state;
     return (
       <>
         <div className="feed">

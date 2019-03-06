@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import { clearCurrentProfile } from "../../actions/profileActions";
 
-class Navbar extends Component {
+class Navbars extends Component {
   handleLogout = event => {
     event.preventDefault();
     this.props.logoutUser();
@@ -89,7 +89,7 @@ class Navbar extends Component {
   }
 }
 
-Navbar.propTypes = {
+Navbars.propTypes = {
   auth: PropTypes.object.isRequired,
   logoutUser: PropTypes.func.isRequired
 };
@@ -101,4 +101,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { logoutUser, clearCurrentProfile }
-)(withRouter(Navbar));
+)(withRouter(Navbars));
