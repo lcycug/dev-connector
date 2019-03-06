@@ -11,18 +11,21 @@ import ExperienceCard from "./ExperienceCard";
 class Profile extends Component {
   constructor(props) {
     super(props);
-    const handle = this.props.location.pathname.substring("/profile/".length);
-    this.props.getHandleProfile(handle);
     this.state = {
       loading: true,
       profile: null
     };
   }
 
+  componentDidMount() {
+    const handle = this.props.location.pathname.substring("/profile/".length);
+    this.props.getHandleProfile(handle);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.profile) {
       this.setState({
-        loading: nextProps.profile.loading,
+        loading: false,
         profile: nextProps.profile.profile
       });
     }

@@ -13,6 +13,7 @@ class Feed extends Component {
     super(props);
     this.state = {
       profile: null,
+      postable: false,
       text: "",
       errors: {}
     };
@@ -25,13 +26,16 @@ class Feed extends Component {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
     }
-    if (nextProps.profile) {
-      this.setState({ profile: nextProps.profile.profile });
+    if (
+      nextProps.profile &&
+      nextProps.profile.profile !== null &&
+      Object.keys(nextProps.profile.profile).length !== 0
+    ) {
+      this.setState({ profile: nextProps.profile.profile, postable: true });
     }
   }
   handleChange = event => {
-    const { profile } = this.state;
-    const postable = profile !== null && Object.keys(profile).length !== 0;
+    const { postable } = this.state;
     if (postable) {
       this.setState({
         [event.target.name]: event.target.value
@@ -40,16 +44,13 @@ class Feed extends Component {
   };
   handleSubmit = event => {
     event.preventDefault();
-    const { profile } = this.state;
-    const postable = profile !== null && Object.keys(profile).length !== 0;
+    const { postable } = this.state;
     if (postable) {
       this.props.createPost({ text: this.state.text });
     }
-    // this.setState({ text: "" });
   };
   render() {
-    const { errors, profile } = this.state;
-    const postable = profile !== null && Object.keys(profile).length !== 0;
+    const { errors, postable, profile, posts } = this.state;
     return (
       <>
         <div className="feed">
