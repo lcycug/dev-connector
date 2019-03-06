@@ -104,7 +104,11 @@ router.delete(
           // Deletion
           post
             .remove()
-            .then(() => res.json({ success: true }))
+            .then(() => {
+              Post.find()
+                .sort({ date: -1 })
+                .then(posts => res.json(posts));
+            })
             .catch(err => res.json(err));
         });
       })

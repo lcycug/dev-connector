@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 
-import { getPosts, likePost } from "../../actions/postActions";
+import { getPosts, likePost, deletePost } from "../../actions/postActions";
 import { getCurrentProfile } from "../../actions/profileActions";
 import Spinner from "../common/Spinner";
 
@@ -17,6 +17,7 @@ class Posts extends Component {
     }
     this.state = {
       profile: this.props.profile, // Used for like a comment css
+      postable: false,
       posts: null,
       loading: true
     };
@@ -28,22 +29,30 @@ class Posts extends Component {
         loading: false
       });
     }
-    if (nextProps.profile) {
+    if (
+      nextProps.profile &&
+      nextProps.profile.profile &&
+      Object.keys(nextProps.profile.profile).length
+    ) {
       this.setState({
         profile: nextProps.profile.profile,
-        loading: false
+        loading: false,
+        postable: true
       });
     }
   }
   handleClick = event => {
-    this.props.likePost(event.currentTarget.id);
+    if (this.state.postable) {
+      this.props.likePost(event.currentTarget.id);
+    }
+  };
+  handleDelete = event => {
+    this.props.deletePost(event.currentTarget.id);
   };
   render() {
-    const { posts, loading, profile } = this.state;
-    const Postable = profile !== null && Object.keys(profile).length !== 0;
+    const { posts, loading, profile, postable } = this.state;
     let postsContent;
     if (loading || posts === null || profile === null) {
-      //Loading data
       postsContent = <Spinner />;
     } else {
       postsContent = (
@@ -74,17 +83,17 @@ class Posts extends Component {
                           id={post._id}
                           type="button"
                           className="btn btn-light mr-1"
-                          onClick={!Postable ? null : e => this.handleClick(e)}
+                          onClick={!postable ? null : e => this.handleClick(e)}
                         >
                           <i
                             className={classnames("fas fa-thumbs-up", {
-                              "text-info": !Postable
+                              "text-info": !postable
                                 ? false
                                 : post.likes.filter(
                                     like =>
                                       like.user.toString() === profile.user._id
                                   ).length !== 0,
-                              "text-secondary": !Postable
+                              "text-secondary": !postable
                                 ? true
                                 : post.likes.filter(
                                     like =>
@@ -102,9 +111,18 @@ class Posts extends Component {
                         >
                           Comments
                         </Link>
-                        {/* <button type="button" className="btn btn-danger mr-1">
-                          <i className="fas fa-times" />
-                        </button> */}
+                        {profile &&
+                        profile.user &&
+                        profile.user._id === post.user ? (
+                          <button
+                            id={post._id}
+                            onClick={e => this.handleDelete(e)}
+                            type="button"
+                            className="btn btn-danger mr-1"
+                          >
+                            <i className="fas fa-times" />
+                          </button>
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -128,7 +146,8 @@ const mapStateToProps = state => ({
   post: state.post,
   profile: state.profile
 });
+
 export default connect(
   mapStateToProps,
-  { getPosts, likePost, getCurrentProfile }
+  { getPosts, likePost, getCurrentProfile, deletePost }
 )(Posts);

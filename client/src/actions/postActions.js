@@ -116,3 +116,26 @@ export const postComment = (postId, commentData) => dispatch => {
       })
     );
 };
+
+export const deletePost = postId => dispatch => {
+  axios
+    .delete(`/api/posts/${postId}`)
+    .then(res =>
+      dispatch({
+        type: GET_POSTS,
+        payload: res.data
+      })
+    )
+    .then(() =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      })
+    )
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
+};
